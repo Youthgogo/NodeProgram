@@ -1,0 +1,29 @@
+<!-- 管理系统头部 -->
+<div class="header">
+  <nav class="navbar navbar-custom">
+    <div class="navbar-header">
+      <a href="javascript:;" class="navbar-brand">数据分发管理系统</a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+      <li><a class="logout" style="cursor: pointer"><i class="fa fa-sign-out"></i>退出</a></li>
+    </ul>
+  </nav>
+</div>
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="./js/config.js"></script>
+<script>
+  $(function () {
+    $('.logout').on('click', ()=>{
+      $.get(LK.SERVER + 'back/user/api/logout', (data)=>{
+        if(data.status === 200){  //退出登录成功
+          alert(data.result);
+          //删除本地数据
+          sessionStorage.removeItem('result');
+          sessionStorage.setItem('selectedTag', 'one')
+          //跳转到登录界面
+          window.location.href = '/back/login';
+        }
+      });
+    });
+  });
+</script>

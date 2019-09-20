@@ -1,0 +1,94 @@
+{% extends "back/base.html" %}
+
+<!--新增的样式-->
+{% block style %}
+{% endblock %}
+
+<!--主要内容-->
+{% block body %}
+<div class="container-fluid">
+    <!-- 修改密码 -->
+    <div class="body">
+        <div class="repass">
+            <form action="http://localhost:3000/back/user/api/reset" method="post" class="form-horizontal col-md-offset-2">
+                <div class="form-group">
+                    <label for="" class="col-md-3 control-label">原密码</label>
+                    <div class="col-md-4">
+                        <input id="old_pwd" name="old_pwd" type="text" class="form-control input-sm" required placeholder="请输入原密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-md-3 control-label">新密码</label>
+                    <div class="col-md-4">
+                        <input id="new_pwd" name="new_pwd" type="password" class="form-control input-sm" required placeholder="请输入新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="" class="col-md-3 control-label">确认密码</label>
+                    <div class="col-md-4">
+                        <input id="re_pwd" name="re_pwd" type="password" class="form-control input-sm" required placeholder="请再一次输入新密码">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-7">
+                        <input type="submit" class="btn btn-success btn-danger  pull-right" value="修 改">
+                        <a href="/back/u_set" class="btn btn-success btn-warning pull-right" style="margin-right: 10px;">返 回</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!--脚本-->
+{% block script %}
+<script src="./js/md5.js"></script>
+<script>
+    $(function () {
+        $('form').on('submit', function() {
+            //1. 获取用户输入的密码
+            let old_pwd = $('#old_pwd').val();
+            let new_pwd = $('#new_pwd').val();
+            let re_pwd = $('#re_pwd').val();
+
+            //2. 对比
+            if(new_pwd !== re_pwd){
+                alert('两次输入新密码不一致！');
+            }else{
+                //3. 盐
+                const S_KEY = '@wencai.com';
+                let md5_old_pwd = md5(old_pwd + S_KEY);
+                let md5_new_pwd = md5(new_pwd + S_KEY);
+                let token = JSON.parse(localStorage.getItem('result')).token;
+
+                //4. 发起post请求
+                $.ajax({
+                    url: LK.SERVER + 'back/user/api/reset',
+                    type: $(this).attr('method'),
+                    data: `token=${token}&old_pwd=${md5_old_pwd}&new_pwd=${md5_new_pwd}`,
+                    success: function (data) {
+                        console.log(data);
+                        if(data.status === 200){
+                            alert('密码修改成功！');
+                            //5. 退出登录 重新登录
+                            $.get('http://localhost:3000/back/user/api/logout', function (data) {
+                                if(data.status === 200){
+                                    //删除本地的数据
+                                    localStorage.removeItem('result');
+                                    //返回登录界面
+                                    window.location.href = '/back/login';
+                                }
+                            })
+                        }else{
+                            alert('密码修改失败！');
+                        }
+                    }
+                });
+            }
+
+            return false;
+        });
+    });
+</script>
+{% endblock %}

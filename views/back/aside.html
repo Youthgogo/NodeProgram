@@ -1,0 +1,97 @@
+<!-- 侧边栏 -->
+<div class="aside">
+  <!-- 个人资料 -->
+  <div id="profile" class="profile">
+    <!-- 头像 -->
+
+  </div>
+  <!-- 导航菜单 -->
+  <div id="navs" class="navs">
+
+  </div>
+</div>
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="./js/config.js"></script>
+<script>
+  $(function () {
+    //0. 处理选中
+    let selectedTag = sessionStorage.getItem('selectedTag') || 'one';
+    let t_html = `
+        <ul id="lk_item" class="list-unstyled">
+      <li>
+        <a tag="one" href="/back" class="${selectedTag === 'one' ? 'active' : ''}">
+          <i class="fa fa-area-chart"></i>
+          首页数据
+        </a>
+      </li>
+      <li>
+        <a tag="two" href="/back/s_list" class="${selectedTag === 'two' ? 'active' : ''}">
+          <i class="fa fa-calculator"></i>
+          轮播图
+        </a>
+      </li>
+      <li>
+        <a tag="there" href="/back/source_list" class="${selectedTag === 'there' ? 'active' : ''}">
+          <i class="fa fa-users"></i>
+          幼教资源
+        </a>
+      </li>
+      <li>
+        <a tag="four" href="/back/u_center" class="${selectedTag === 'four' ? 'active' : ''}">
+          <i class="fa fa-object-group"></i>
+          用户中心
+        </a>
+      </li>
+      <li>
+        <a tag="five" href="/back/u_set" class="${selectedTag === 'five' ? 'active' : ''}">
+          <i class="fa fa-object-group"></i>
+          用户信息
+        </a>
+      </li>
+    </ul>
+    `;
+
+    $('#navs').html(t_html);
+
+    //1. 请求用户数据
+    //1.1 获取本地的token
+    let token = JSON.parse(localStorage.getItem('result')).token;
+    console.log(token);
+
+    //根据token请求数据
+    if(token){
+      $.ajax({
+        url: LK.SERVER + 'back/user/api/u_msg/' + token,
+        type: 'get',
+        dataType: 'json',
+        success: function (data) {
+          // console.log(data);
+          if (data.status === 200) {
+            //2.1 注入数据
+            let tpl = `
+              <div class="avatar img-circle">
+                <img src="${data.result.icon_url ? '/uploads/' + data.result.icon_url : './uploads/avatar.png'}" style="text-align: center">
+              </div>
+              <h4>${data.result.real_name}</h4>
+                    `;
+            $('#profile').html(tpl);
+          }else{
+            alert('获取用户信息失败！');
+          }
+        }
+      });
+    }else{
+      //删除本地数据
+      localStorage.removeItem('result');
+      //跳转到登录界面
+      window.location.href = '/back/login';
+    }
+
+    //2.处理点击选中
+    $('#lk_item>li>a').on('click', function () {
+      //2.1 存储选中的tag到本地
+      sessionStorage.setItem('selectedTag', $(this).attr('tag'));
+    });
+  })
+</script>

@@ -1,0 +1,108 @@
+{% extends "back/base.html" %}
+
+<!--新增的样式-->
+{% block style %}
+{% endblock %}
+
+<!--主要内容-->
+{% block body %}
+<div class="container-fluid">
+    <div class="body advert">
+        <ol class="breadcrumb">
+            <li><a href="/back/source_list">资源文章管理</a></li>
+            <li class="active">文章列表</li>
+        </ol>
+        <div class="page-title">
+            <a href="/back/source_add" class="btn btn-danger btn-sm pull-right">添加资源文章</a>
+        </div>
+        <div class="panel panel-default">
+            {% if sources.length > 0 %}
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <td>序号</td>
+                    <th>标题</th>
+                    <th>缩略图</th>
+                    <th>是否收藏</th>
+                    <th>价格</th>
+                    <th>作者</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for source in sources %}
+                    <tr>
+                        <td>{{loop.index}}</td>
+                        <td>{{source.title}}</td>
+                        <td style="display: flex; justify-content: center">
+                            <img src="/uploads/{{source.small_img}}" alt="" style="width: 200px">
+                        </td>
+                        <td>{{source.is_store}}</td>
+                        <td>{{source.price}}</td>
+                        <td>{{source.author}}</td>
+                        <td>
+                            <a data-id="{{source._id}}" class="btn btn-primary btn-xs btn-edit">编辑</a>
+                            <a data-id="{{source._id}}" class="btn btn-danger btn-xs btn-del">删除</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div style="text-align: center; padding: 30px 0;">
+                <img src="./images/black.jpg" alt="" style="width:300px; margin: 0 auto">
+                <h3>小文温馨提示：页面还没有内容呀~，赶紧添加吧！</h3>
+            </div>
+            {% endif %}
+        </div>
+        <!--分页-->
+        <ul class="pagination pull-right">
+            <li><a href="/back/source_list?page={{page - 1}}">上一页</a></li>
+            {% for i in range(0, totalPage) -%}
+            {% if(i+1) ===page %}
+            <li class="active"><a href="/back/source_list?page={{i + 1}}">{{i+1}}</a></li>
+            {% else %}
+            <li><a href="/back/source_list?page={{i + 1}}">{{i+1}}</a></li>
+            {% endif %}
+            {%- endfor %}
+            <li><a href="/back/source_list?page={{page + 1}}">下一页</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+<!--脚本-->
+{% block script %}
+<script>
+    $(function () {
+        //1. 点击了修改按钮
+        $('.btn-edit').on('click',function(){
+           let sourceId = $(this).attr('data-id');
+           //传递Id
+            window.location.href = `/back/source_edit?sid=${sourceId}`;
+        });
+
+        //2. 点击了修改按钮
+        $('.btn-del').on('click',function(){
+          let sowingId = $(this).attr('data-id');
+          //2.1 发起ajax
+          $.ajax({
+            url: LK.SERVER + 'back/sowing/api/remove/' + sowingId,
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+              console.log(data);
+              if(data.status === 200){
+                alert('删除成功！');
+              }else{
+                alert('删除失败！');
+              }
+              //重新渲染页面
+              window.location.reload();
+            }
+          });
+        });
+    });
+</script>
+{% endblock %}
+

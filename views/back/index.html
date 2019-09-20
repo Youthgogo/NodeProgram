@@ -1,0 +1,68 @@
+<!--继承base.html的基础模板-->
+{% extends "back/base.html" %}
+
+<!--新增的样式-->
+{% block style %}
+{% endblock %}
+
+<!--主要内容-->
+{% block body %}
+<div class="container-fluid">
+    <!-- 个人资料 -->
+    <div class="body teacher-profile" style="padding-top: 100px">
+        <div class="profile">
+            <div class="row c1">
+                <div class="col-md-4">
+                    <div class="cell s1">
+                        <i class="fa fa-users"></i>
+                        <h4>登录用户</h4>
+                        <h5>13,000</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cell s2">
+                        <i class="fa fa-registered"></i>
+                        <h4>新增注册</h4>
+                        <h5>12,00</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cell s3">
+                        <i class="fa fa-camera"></i>
+                        <h4>课程新增学员</h4>
+                        <h5>123</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="row c1">
+                <div class="col-md-4">
+                    <div class="cell s4">
+                        <i class="fa fa-safari"></i>
+                        <h4>班级新增学员</h4>
+                        <h5>666</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cell s5">
+                        <i class="fa fa-opera"></i>
+                        <h4>新增会员</h4>
+                        <h5>1122</h5>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="cell s6">
+                        <i class="fa fa-question"></i>
+                        <h4>未回复问答</h4>
+                        <h5>236</h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!--脚本-->
+{% block script %}
+
+{% endblock %}
